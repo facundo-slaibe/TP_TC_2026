@@ -1,54 +1,36 @@
-# Sistema de Control de Velocidad de un Motor DC para Refrigeración de Racks de Servidores
+# TFI Teoría de Control: control de velocidad de un ventilador de servidor
 
-Trabajo Final Integrador — Teoría de Control  
-Tecnologías de Automatización — UTN FRBA
+UTN FRBA · Tecnologías de Automatización (Teoría de Control) · K4521 · 2026-II
+Alumnos: Matías Rainhart y Facundo Slaibe · Docente: Omar Civale
 
-## Integrantes
+Simulación del lazo de velocidad de un ventilador de servidor (motor BLDC comandado por PWM, medición por tacómetro
+Hall y controlador PI digital con período de 100 ms), usada en la memoria técnica del Trabajo Final Integrador.
 
-- **Matías Rainhart**
-- **Facundo Slaibe**
+## Recursos necesarios
 
-**Docente:** Dr. Omar Civale  
-**Comisión:** K4521
+- Python 3.9 o posterior (Windows, Linux o macOS).
+- numpy y matplotlib: `pip install -r simulacion/requirements.txt`
+- No requiere hardware.
 
----
+## Cómo ejecutarlo
 
-## Descripción del proyecto
+Desde la carpeta `simulacion`:
 
-Este proyecto corresponde al Trabajo Final Integrador de la materia **Tecnologías de Automatización**, dentro del bloque temático de **Teoría de Control**.
+| Comando | Qué hace |
+|---|---|
+| `python tablero.py` | Tablero en tiempo real con las seis señales del lazo. Permite mover la temperatura, la tensión, la fricción y las ganancias, trabar el rotor y pasar de PI a P. |
+| `python escenarios.py` | Corre los 8 escenarios de la memoria técnica, guarda los gráficos en `figuras/` y los valores medidos en `resultados.json`. |
+| `python analisis.py` | Linealización, diseño del PI, arreglo de Routh y constantes de error. |
 
-El trabajo aborda el diseño y análisis de un **sistema de control de velocidad para un motor de corriente continua (DC)** utilizado en un ventilador de refrigeración de un rack de servidores.
+## Archivos
 
-El objetivo es modelar matemáticamente el comportamiento del motor, diseñar un controlador de velocidad y analizar las características de estabilidad y error del sistema mediante herramientas propias de la Teoría de Control.
+- `modelo.py`: parámetros, modelo del ventilador, medición por tacómetro, controlador PI y supervisión.
+- `escenarios.py`, `tablero.py`, `analisis.py`: ver la tabla anterior.
+- `diagrama_bloques.py`, `senales_pwm_tacometro.py`: generan dos figuras de la memoria técnica.
 
-El sistema planteado se encuentra dentro del contexto de la **infraestructura de Tecnologías de la Información (TI)** y la refrigeración automatizada de servidores.
+## Para probar en el tablero
 
----
-
-## Objetivos
-
-### Objetivo general
-
-Diseñar y fundamentar un sistema de control de lazo cerrado que permita regular automáticamente la velocidad de un motor DC perteneciente a un ventilador de refrigeración, utilizando como referencia una consigna de velocidad relacionada con la temperatura del equipo.
-
-### Objetivos específicos
-
-- Identificar y describir la estructura completa del sistema de control.
-- Identificar transductores, actuadores, señales y perturbaciones.
-- Obtener el modelo matemático del motor DC a partir de sus ecuaciones diferenciales.
-- Obtener la función de transferencia de la planta.
-- Representar el sistema mediante un diagrama de bloques de lazo cerrado.
-- Diseñar un controlador **Proporcional-Integral (PI)**.
-- Analizar la estabilidad mediante el **criterio de Routh-Hurwitz**.
-- Analizar el error en estado estacionario.
-- Simular el comportamiento del sistema mediante un programa desarrollado en Python.
-
----
-
-## Contexto del sistema
-
-El sistema se encuentra aplicado a la refrigeración de un **rack de servidores**.
-
-Los servidores generan calor durante su funcionamiento, por lo que resulta necesario mantener una temperatura adecuada para evitar problemas de funcionamiento y degradación del rendimiento.
-
-Para esto se utilizan ventiladores cuya velocidad puede regularse mediante **PWM (Pulse Width Modulation)**.
+- Poner Ki = 0: aparece el error permanente (sistema de Tipo 0).
+- Con la temperatura en 20 °C, multiplicar Kp por 4 (≈ 0,18): oscilación sostenida, el límite lo impone el muestreo.
+- Bajar la tensión a 10,8 V o subir el par adicional: el error vuelve a cero y el PWM queda más alto.
+- Trabar el rotor: la medición cae a 0 y a los 2 s entra el modo seguro.
