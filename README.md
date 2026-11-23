@@ -30,7 +30,9 @@ Desde la carpeta `simulacion`:
 
 ## Para probar en el tablero
 
-- Poner Ki = 0: aparece el error permanente (sistema de Tipo 0).
+- Botón "Pasar a solo P": aparece el error permanente (sistema de Tipo 0). Si en cambio se pone Ki = 0 con el
+  ventilador estabilizado, el error no aparece hasta cambiar la temperatura: el PI es incremental y lo que acumuló la
+  acción integral queda guardado en el PWM actual. Al subir de 22 a 27 °C con Ki = 0 queda un error de unos 320 rpm.
 - Con la temperatura en 20 °C, multiplicar Kp por 4 (≈ 0,18): oscilación sostenida, el límite lo impone el muestreo.
 - Bajar la tensión a 10,8 V o subir el par adicional: el error vuelve a cero y el PWM queda más alto.
 - Trabar el rotor: la medición cae a 0 y a los 2 s entra el modo seguro.
